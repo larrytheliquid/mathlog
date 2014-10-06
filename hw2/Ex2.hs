@@ -4,6 +4,7 @@ module Main  where
 
 import SimpleProp
 
+import Data.List
 import Test.QuickCheck hiding(Prop(..))
 import Test.HUnit
 
@@ -87,22 +88,67 @@ flatten (OrP x y) = [collect [x,y]]
         collect (z:zs) = z : collect zs
 flatten x = [[x]]        
 
-simple:: Eq n => [[Prop n]] -> [[Prop n]]
-simple [] = []
-simple (x:xs) 
-  | elem TruthP x = simple xs
-  | conjugatePair x = simple xs
-  | subsumes xs x = simple xs
-  | otherwise = x : simple xs
 
-conjugatePair [] = False
-conjugatePair [x] = False
-conjugatePair (LetterP x : xs) = elem (NotP (LetterP x)) xs
-conjugatePair (NotP x : xs) = elem x xs
-conjugatePair (x:xs) = conjugatePair xs
+----------------------------------------------------------------------
+
+-- This is performed before simpleAnds
+-- Simplifiy Ors by removing duplicates ands Falses
+simpleOrs :: Eq n => [Prop n] -> [Prop n]
+simpleOrs = nub . filter (/= AbsurdP)
+
+----------------------------------------------------------------------
+
+-- This is performed after simpleAnds (so we still get (a \/ ~a) => true)
+-- Remove negations in Ors if they appear
+-- in another Ands: (a \/ b) /\ (~a \/ c) => (a \/ b) /\ c
+
+negAnds :: Eq n => [[Prop n]] -> [[Prop n]]
+negAnds xss = foldr negAnd xss (cnfVars xss)
+
+cnfVars :: Eq n => [[Prop n]] -> [n]
+cnfVars xss = nub (concatMap vars (concat xss))
+  where
+  vars (LetterP a) = [a]
+  vars _ = []
+
+negAnd :: Eq n => n -> [[Prop n]] -> [[Prop n]]
+negAnd n = map (negOrs n)
+
+negOrs :: Eq n => n -> [Prop n] -> [Prop n]
+negOrs n = filter (not . isNegation n)
+
+isNegation a (NotP (LetterP b)) = a == b
+isNegation a _ = False
+
+----------------------------------------------------------------------
+
+-- Simplify Ands by removing Ors containing A Truth,
+-- containing a variable and its negation, and
+-- subsets of Ors
+simpleAnds:: Eq n => [[Prop n]] -> [[Prop n]]
+simpleAnds [] = []
+simpleAnds (x:xs) 
+  | elem TruthP x = simpleAnds xs
+  | conjugateOrPair x = simpleAnds xs
+  | subsumes xs x = simpleAnds xs
+  | otherwise = x : simpleAnds xs
+
+conjugateOrPair [] = False
+conjugateOrPair [x] = False
+conjugateOrPair (LetterP x : xs) = elem (NotP (LetterP x)) xs
+conjugateOrPair (NotP x : xs) = elem x xs
+conjugateOrPair (x:xs) = conjugateOrPair xs
 
 subsumes [] xs = False
 subsumes (ys : yss) xs = all ( `elem` xs) ys || subsumes yss xs 
+
+----------------------------------------------------------------------
+
+simple:: Eq n => [[Prop n]] -> [[Prop n]]
+simple xs = if elem [] xs' then [[]] else xs'
+  where xs' = negAnds $ simpleAnds $ map simpleOrs xs
+
+----------------------------------------------------------------------
 
 cnf' :: Eq n => Prop n -> [[Prop n]]
 cnf' x = (simple . flatten .  pushDisj . nnf . elimImplies) x
@@ -173,7 +219,7 @@ check x = and[ (eval e x == eval e (cnf x)) | e <- envs]
 check2 x = foldl (*&*) (lift True) [ lift(eval e x == eval e (cnf x)) | e <- envs]
 
 t1 = quickCheck check
-t2 = smallCheck 2 check2
+t2 = smallCheck 3 check2
 
 main = t2
 
