@@ -103,10 +103,14 @@ simpleOrs = nub . filter (/= AbsurdP)
 -- in another Ands: (a \/ b) /\ (~a \/ c) => (a \/ b) /\ c
 
 negAnds :: Eq n => [[Prop n]] -> [[Prop n]]
-negAnds xss = foldr negAnd xss (cnfVars xss)
+negAnds [] = []
+negAnds (xs:xss) = xs : negAnds (foldr negAnd xss (cnfVars xs))
 
-cnfVars :: Eq n => [[Prop n]] -> [n]
-cnfVars xss = nub (concatMap vars (concat xss))
+negAnds' :: Eq n => [[Prop n]] -> [[Prop n]]
+negAnds' = negAnds . reverse . negAnds
+
+cnfVars :: Eq n => [Prop n] -> [n]
+cnfVars = nub . concatMap vars
   where
   vars (LetterP a) = [a]
   vars _ = []
@@ -146,7 +150,7 @@ subsumes (ys : yss) xs = all ( `elem` xs) ys || subsumes yss xs
 
 simple:: Eq n => [[Prop n]] -> [[Prop n]]
 simple xs = if elem [] xs' then [[]] else xs'
-  where xs' = negAnds $ simpleAnds $ map simpleOrs xs
+  where xs' = negAnds' $ simpleAnds $ map simpleOrs xs
 
 ----------------------------------------------------------------------
 
