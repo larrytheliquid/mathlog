@@ -1,16 +1,6 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
-
 module Main  where
 
 import SimpleProp
-
-import Data.List
-import Test.QuickCheck hiding(Prop(..))
-import Test.HUnit
-
-import qualified LazySmallCheck as SC
--- import LazySmallCheck
-import Control.Monad(liftM,liftM2)
 
 ----------------------------------------------------------------------
 
