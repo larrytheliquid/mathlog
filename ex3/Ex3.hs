@@ -44,11 +44,11 @@ tabulate p = process [NotP p]
 
 ----------------------------------------------------------------------
 
-fromLit :: [Prop a] -> [Either a a]
-fromLit = map $ \p -> case p of
-  LetterP a -> Left a
-  NotP (LetterP a) -> Right a
-  _ -> error "Prop not a literal or its negation"
+toEither :: [Prop a] -> [Either a a]
+toEither [] = []
+toEither (LetterP a : ps) = Left a : toEither ps
+toEither (NotP (LetterP a) : ps) = Right a : toEither ps
+toEither (_ : ps) = toEither ps
 
 both :: Eq a => [Either a a] -> Maybe [Either a a]
 both = flip foldl (Just []) $
@@ -59,7 +59,7 @@ both = flip foldl (Just []) $
       Right p -> if any (== Left p) ps then Nothing else Just (Right p:ps)
 
 contra :: Eq a => [Prop a] -> Bool
-contra = maybe True (const False) . both . fromLit
+contra = maybe True (const False) . both . toEither
 
 contras :: Eq a => [[Prop a]] -> Bool
 contras = all contra
