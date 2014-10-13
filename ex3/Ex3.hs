@@ -44,6 +44,27 @@ tabulate p = process [NotP p]
 
 ----------------------------------------------------------------------
 
+type ABL a = ( [(Prop a , Prop a)] , [(Prop a , Prop a)] , [Prop a] )
+
+insertABL :: Prop a -> ABL a -> ABL a
+insertABL p (as,bs,ls) = case discrim p of
+  Alpha x y -> ((x,y):as , bs , ls)
+  Beta x y -> (as , (x,y):bs , ls)
+  Lit x -> (as , bs , x:ls)
+
+process2 :: ABL a -> [[Prop a]]
+process2 ([] , [] , []) = [[]]
+process2 (((x,y):as) , bs , ls) =
+  process2 $ insertABL x $ insertABL y (as,bs,ls)
+process2 (as , (x,y):bs , ls) =
+  process2 (insertABL x (as,bs,ls)) ++ process2 (insertABL y (as,bs,ls))
+process2 (as , bs , x:ls) = map (x:) $ process2 (as,bs,ls)
+
+tabulate2 :: Prop a -> [[Prop a]]
+tabulate2 p = process2 $ insertABL (NotP p) ([],[],[])
+
+----------------------------------------------------------------------
+
 toEither :: [Prop a] -> [Either a a]
 toEither [] = []
 toEither (LetterP a : ps) = Left a : toEither ps
@@ -69,11 +90,15 @@ contras = all contra
 tableau :: Eq a => Prop a -> Bool
 tableau = contras . tabulate
 
+tableau2 :: Eq a => Prop a -> Bool
+tableau2 = contras . tabulate2
+
 ----------------------------------------------------------------------
 
 eg1 =  0 \/ (1 /\ 2)
 
 eg2 = 0 \/ (1 /\ 2) ~> ((0 \/ 1) /\ (0 \/ 2))
 
+eg3 = (0 ~> (1 ~> 2)) ~> ((0 ~> 1) ~> (0 ~> 2))
 
 ----------------------------------------------------------------------
