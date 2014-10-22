@@ -21,6 +21,8 @@ discrim (NotP TruthP) = Lit AbsurdP
 discrim (NotP AbsurdP) = Lit TruthP
 discrim (NotP (LetterP s)) = Lit (NotP (LetterP s))
 
+----------------------------------------------------------------------
+
 process :: [Prop a] -> [[Prop a]]
 process [] = [[]]
 process (p : ps) =
