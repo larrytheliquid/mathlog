@@ -46,3 +46,47 @@ bothNot :: Boolean t => t -> t -> t
 bothNot p q = neg p `conj` neg q
 
 ----------------------------------------------------------------------
+
+evens = snd $ enum f [dim 5,dim 5,dim 5] 0
+  where
+  f [x,y,z] n = if even x && even y && even z then Just(n+1,LetterP n) else Nothing
+
+odds = snd $ enum f [dim 5,dim 5,dim 5] 0
+  where
+  f [x,y,z] n = if odd x && odd y && odd z then Just(n+1,LetterP n) else Nothing
+
+ordered = snd $ enum f [dim 5,dim 5,dim 5] 0
+  where
+  f [x,y,z] n = if x <= y && y <= z then Just(n+1,LetterP n) else Nothing
+
+same = snd $ enum f [dim 5,dim 5,dim 5] 0
+  where
+  f [x,y,z] n = if x == y && y == z then Just(n+1,LetterP n) else Nothing
+
+----------------------------------------------------------------------
+
+different = complement same
+compOdds = complement odds
+compEvens = complement evens
+
+nones = intersect evens odds
+sameEvens = intersect same evens
+orderedOdds = intersect ordered odds
+
+----------------------------------------------------------------------
+
+people = ["Anita","Barbara","Caleb","Frank","George","Margareet","Tim","Walter"]
+
+tuples = [ ("Frank","Tim"),("Tim" , "Caleb"),("Walter","Frank"), 
+           ("Anita","Tim"),("Margareet","Barbara"),("Barbara","Caleb")]
+                   
+pd = dimS people           
+p = fromFiniteList True [pd,pd] tuples
+
+children = project [1] p
+parents = project [0] p
+both = intersect children parents
+threeGen = join 1 p (project [1,0] p)
+grandparents = project [2] threeGen
+
+----------------------------------------------------------------------
