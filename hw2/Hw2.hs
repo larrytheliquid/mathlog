@@ -105,4 +105,10 @@ step x = project [2,0] $ join 1 x (project [1,0] x)
 steps x 0 = x
 steps x n = step (steps x (pred n))
 
+{-
+To write the transitive closure, you would have to continue to step until you step
+to an empty set. Along the way, you need to accumulate the result of each step so
+the accumulator can be returned when you reach the empty set.
+-}
+
 ----------------------------------------------------------------------
