@@ -39,6 +39,10 @@ s4 = fromFiniteList True [d4,d4] [ (x,y) | x <- enumFrom Mon , y <- enumFrom Mon
 
 ----------------------------------------------------------------------
 
+doubleNeg :: Boolean t => t -> t
+doubleNeg = neg . neg
 
+bothNot :: Boolean t => t -> t -> t
+bothNot p q = neg p `conj` neg q
 
 ----------------------------------------------------------------------
