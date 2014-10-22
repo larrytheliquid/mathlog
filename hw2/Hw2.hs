@@ -90,3 +90,19 @@ threeGen = join 1 p (project [1,0] p)
 grandparents = project [2] threeGen
 
 ----------------------------------------------------------------------
+
+fourGen = join 3 threeGen (join 0 p (project [1,0] p))
+quaduples = project [3,2,0,1] fourGen
+
+greatgrandparents = project [3] fourGen
+
+ggpChild = join 1 p greatgrandparents
+
+----------------------------------------------------------------------
+
+step x = project [2,0] $ join 1 x (project [1,0] x)
+
+steps x 0 = x
+steps x n = step (steps x (pred n))
+
+----------------------------------------------------------------------
