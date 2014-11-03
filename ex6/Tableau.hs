@@ -279,4 +279,28 @@ FAIL
 
 -}
 
+----------------------------------------------------------------------
+
+usedTerm x y = do
+  max <- get
+  let xs = map (\n -> (Var ("n"++show n))) [0..max]
+  return $ (elem x xs || elem y xs)
+
+-- contra2' :: (Eq v, Eq f, Eq a) =>
+--   [Formula a f v] -> [Formula a f v] -> State Int (Maybe (Either (Subst v (Term f)) ()))
+-- contra2' (x:xs) ys = case someConj x ys of
+--     Nothing -> contra2' xs ys
+--     Just (s,l,r) -> do
+--       used <- usedTerm l r
+--       if used
+--       then return $ Just (Left s)
+--       else return $ Just (Left s)
+-- contra2' [] ys = return Nothing
+
+-- contras2 :: [[FormulaS]] -> State Int Bool
+-- contras2 (xs:xss) = case contra xs of
+--   Just s -> contras2 (map (map (subst s)) xss)
+--   Nothing -> return False
+-- contras2 [] = return True
+
 ----------------------------------------------------------------------                
