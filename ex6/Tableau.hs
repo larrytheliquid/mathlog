@@ -248,4 +248,23 @@ contras = all contra
 
 tableau = contras . fst . try2
 
+{- tableau works on f1, f2, & f3 because
+each yields terms that can be unified in each branch.
+
+fst . try2 $ f1
+[[~O(f2(), n3),O(n1, n1)]]
+subst: n3 |-> n1, n1 |-> f2()
+
+fst . try2 $ f2
+[[~O(f2(), f2()),~O(f3(),f3()),O(n1, n1)]]
+subst: n1 |-> f2()
+
+fst . try2 $ f3
+[[~O(f2(), f2()),O(n1, n1)],
+ [~O(f3(), f3()),O(n1, n1)]]
+subst1: n1 |-> f2()
+subst2: n1 |-> f3()
+
+-}
+
 ----------------------------------------------------------------------                
