@@ -169,6 +169,7 @@ try x = tblock tree
 
 
 
+f0 = toFormula "(forall x. O(x,x)) --> (forall x. exists y. O(y,x))"
 f1 = toFormula "(forall x. O(x,x)) --> (forall x. exists y. O(x,y))"
 f2 = toFormula "(forall x. O(x,x)) --> (forall x. forall y. O(x,x) | O(y,y))"
 f3 = toFormula "(forall x. O(x,x)) --> (forall x. forall y. O(x,x) & O(y,y))"
@@ -238,18 +239,29 @@ try2 x = runState (tab3 [notP x] [[]]) 1
        
 ----------------------------------------------------------------------
 
-contra :: [FormulaS] -> Bool
-contra xs = any
-  (\x -> maybe False (const True) (someConj x xs))
-  xs
+contra' :: (Eq v, Eq f, Eq a) =>
+  [Formula a f v] -> [Formula a f v] -> Maybe (Subst v (Term f))
+contra' (x:xs) ys = case someConj x ys of
+  Nothing -> contra' xs ys
+  Just (x,_,_) -> Just x
+contra' [] ys = Nothing
+
+contra xs = contra' xs xs
 
 contras :: [[FormulaS]] -> Bool
-contras = all contra
+contras (xs:xss) = case contra xs of
+  Just s -> contras (map (map (subst s)) xss)
+  Nothing -> False
+contras [] = True
 
 tableau = contras . fst . try2
 
-{- tableau works on f1, f2, & f3 because
+{- tableau works on f0, f1, & f2 because
 each yields terms that can be unified in each branch.
+
+fst . try2 $ f0
+[[~O(n3, f2()),O(n1, n1)]]
+subst: n3 |-> n1, n1 |-> f2()
 
 fst . try2 $ f1
 [[~O(f2(), n3),O(n1, n1)]]
@@ -263,7 +275,7 @@ fst . try2 $ f3
 [[~O(f2(), f2()),O(n1, n1)],
  [~O(f3(), f3()),O(n1, n1)]]
 subst1: n1 |-> f2()
-subst2: n1 |-> f3()
+FAIL
 
 -}
 
