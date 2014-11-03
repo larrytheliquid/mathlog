@@ -236,4 +236,16 @@ tab3 (x:xs) paths =
 
 try2 x = runState (tab3 [notP x] [[]]) 1
        
-                
+----------------------------------------------------------------------
+
+contra :: [FormulaS] -> Bool
+contra xs = any
+  (\x -> maybe False (const True) (someConj x xs))
+  xs
+
+contras :: [[FormulaS]] -> Bool
+contras = all contra
+
+tableau = contras . fst . try2
+
+----------------------------------------------------------------------                
