@@ -1,0 +1,35 @@
+Homework #3
+Tableau Prover for Intuitionistic Propositional Logic
+- Larry Diehl
+
+The tableau method proves that a proposition P is a tautology
+by proving that all paths of the negation of P are closed, i.e. the
+negation of P is unsatisfiable. Because we have proven the negation of
+P is false in the model (because P is unsatisfiable), the law of excluded middle
+allows us to conclude that P is true in the model. Additionally,
+certain De Morgan-like transformations are used in the tableau method
+that are only true classically.
+
+So, it seems like tableau provers are intimately tied to classical
+logic, but it turns out that a variant of tableau provers exists for
+intuitionistic logic too. The following paper describes the intuitionistic
+tableau prover:
+A Tableau Decision Procedure for Propositional Intuitionistic Logic
+Alessandro Avellone, Guido Fiorino, Ugo Moscato
+http://ceur-ws.org/Vol-212/07_Fiorino.pdf
+http://www.cs.miami.edu/~geoff/Conferences/IWIL-6/TalkSlides/07_Fiorino.pdf
+
+One kind of model of intuitionistic logic is a Kripke model. However,
+a Kripke model can be restricted in a certain way to become equivalent
+to a classical model (a boolean algebra semantics of classical logic).
+The paper describes how results from classical-like reasoning can be
+imported into the intuitionistic at points where both models coincide.
+
+For my project, I'd like to understand and explains the details of the
+intuitionistic prover, and be able to explain at least the soundness
+result (and maybe the completeness one too). The paper implements an
+optimized version of the prover in C++, but I would like to implement
+an "inefficient" Haskell version that directly follows the tableau
+calculus specification. Finally, because all of this is restricted to
+intuitionistic propositional logic formalized in terms of Kripke
+models, it may be possible to implement the prover in Agda.
