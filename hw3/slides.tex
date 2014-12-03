@@ -17,7 +17,7 @@
 \frame{\titlepage}
 
 \begin{frame}
-\frametitle{Proof Theory for Classical Logic}
+\frametitle{Proof Theory for Intuitionistic Logic}
 
 $$
 \infer
@@ -114,7 +114,7 @@ $$
 \qquad
 \infer
   [\bot_E]
-  {\turn{C}}
+  {\turn{A}}
 {
   {\turn{\bot}}
 }
@@ -123,13 +123,38 @@ $$
 \end{frame}
 
 \begin{frame}
-\frametitle{This is the second slide}
-\framesubtitle{A bit more information about this}
+\frametitle{Proof Theory for Classical Logic}
+
+\center{... intuitionistic rules plus:}
+
+$$
+\infer
+  [\neg\neg_I]
+  {\turn{\neg\neg A}}
+{
+  {\turn{A}}
+}
+\qquad
+\infer
+  [\neg\neg_E]
+  {\turn{A}}
+{
+  {\turn{\neg\neg A}}
+}
+$$
+
+\center{...or...}
+
+$$
+\infer{\turn{A \lor \neg\neg A}}
+{}
+$$
 
 \end{frame}
 
 \begin{frame}
 \frametitle{Reference Smullyan vs Heyting books}
+\framesubtitle{A bit more information about this}
 
 \end{frame}
 
