@@ -440,7 +440,7 @@ $$
 \begin{frame}
 \frametitle{Classical Tableau Interpretation}
 
-Gradually build a model $\sigma$ for $A$ (such that $\sat{A}$),
+Gradually build an evaluation context $\sigma$ for $A$ (such that $\sat{A}$),
 until tableau is finished or the model is contradictory.
 
 \begin{block}{Judgments}
@@ -459,10 +459,8 @@ If the premise is true, then the conclusion is true.
 \begin{frame}
 \frametitle{Intuitionistic Tableau Interpretation}
 
-Gradually learn what parts of the proposition are known to be provable,
+Gradually build a proof of $A$ (an element of $\force{A}$),
 until tableau is finished or the model is contradictory.
-If there is no contradiction, it is possible to construct a proof
-(an element of $\force{A}$) for the entire proposition.
 
 \begin{block}{Judgments}
 \begin{itemize}
