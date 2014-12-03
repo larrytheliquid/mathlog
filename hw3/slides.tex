@@ -30,6 +30,72 @@
 \newcommand{\forcep}[1]{\Gamma \Vdash^p #1}
 \newcommand{\nforce}[1]{\Gamma \nVdash #1}
 
+\def\mycalc{
+$$
+\infer
+  [\T \land]
+  {S , \T A , \T B}
+{
+  {S , \T(A \land B)}
+}
+\qquad
+\infer
+  [\F \land]
+  {S, \F A \| S, \F B}
+{
+  {S, \F(A \land B)}
+}
+$$
+
+$$
+\infer
+  [\T \lor]
+  {S , \T A \| S , \T B}
+{
+  {S , \T(A \lor B)}
+}
+\qquad
+\infer
+  [\F \lor]
+  {S, \F A , \F B}
+{
+  {S, \F(A \lor B)}
+}
+$$
+
+$$
+\infer
+  [\T \! \imp]
+  {S , \F A \| S , \T B}
+{
+  {S , \T(A \imp B)}
+}
+\qquad
+\infer
+  [\F \! \imp]
+  {S_{\T}, \T A , \F B}
+{
+  {S, \F(A \imp B)}
+}
+$$
+
+$$
+\infer
+  [\T \neg]
+  {S , \F A}
+{
+  {S , \T(\neg A)}
+}
+\qquad
+\infer
+  [\F \neg]
+  {S_{\T}, \T A}
+{
+  {S, \F(\neg A)}
+}
+$$
+}
+
 \begin{document}
 
 \frame{\titlepage}
@@ -54,14 +120,6 @@
 
 \begin{frame}
 \frametitle{Classical vs Intuitionistic Logic}
-
-%% \begin{columns}[c] % the "c" option specifies center vertical alignment
-%% \column{.35\textwidth}
-%% Contents of the first column
-
-%% \column{.35\textwidth}
-%% Contents split \\ into two lines
-%% \end{columns}
 
 \begin{block}{Classical Logic}
 \begin{itemize}
@@ -483,44 +541,76 @@ until tableau is finished or the model is contradictory.
 \begin{frame}
 \frametitle{Closed Example $A \imp B$}
 
+\begin{columns}[T]
+\begin{column}[T]{4cm}
 \begin{align*}
 [\{ \F(A \diff{\imp} B) \}],\\
 [\{ \T A, \F A \}].
 \end{align*}
+\end{column}
+
+\begin{column}[T]{7cm}
+\mycalc
+\end{column}
+\end{columns}
 
 \end{frame}
 
 \begin{frame}
 \frametitle{Closed Example $A \imp (A \land A)$}
 
+\begin{columns}[T]
+\begin{column}[T]{4cm}
 \begin{align*}
 [\{ \F(A \diff{\imp} (A \land A)) \}],\\
 [\{ \T A, \F(A \diff{\land} A)) \}],\\
 [\{ \T A, \F A \}, \{ \T A, \F A \}].
 \end{align*}
+\end{column}
+
+\begin{column}[T]{7cm}
+\mycalc
+\end{column}
+\end{columns}
 
 \end{frame}
 
 \begin{frame}
 \frametitle{Open Example $A \lor \neg A$}
 
+\begin{columns}[T]
+\begin{column}[T]{4cm}
 \begin{align*}
 [\{ \F(A \diff{\lor} \neg A) \}],\\
 [\{ \F A, \F(\diff{\neg} A) \}],\\
 [\{ \T A \}].
 \end{align*}
+\end{column}
+
+\begin{column}[T]{7cm}
+\mycalc
+\end{column}
+\end{columns}
 
 \end{frame}
 
 \begin{frame}
 \frametitle{Closed Example $A \imp (A \imp B) \imp B$}
 
+\begin{columns}[T]
+\begin{column}[T]{4cm}
 \begin{align*}
 [\{ \F(A \diff{\imp} (A \imp B) \imp B) \}],\\
 [\{ \T A , \F((A \imp B) \diff{\imp} B) \}],\\
 [\{ \T A, \T(A \diff{\imp} B) , \F B \}],\\
 [\{ \T A, \F A, \F B \}, \{ \T A, \T B , \F B \}].
 \end{align*}
+\end{column}
+
+\begin{column}[T]{7cm}
+\mycalc
+\end{column}
+\end{columns}
 
 \end{frame}
 
