@@ -17,7 +17,7 @@
 \def\dfn{~\Leftrightarrow~}
 \def\arr{\Rightarrow}
 
-\newcommand{\diff}[1]{{\color{red} #1}}
+\newcommand{\diff}[1]{\textcolor{red}{#1}}
 
 \newcommand{\turn}[1]{\Gamma \vdash #1}
 \newcommand{\cturn}[2]{\Gamma , #1 \vdash #2}
@@ -479,6 +479,51 @@ until tableau is finished or the model is contradictory.
 \end{frame}
 
 \againframe{calculus}
+
+\begin{frame}
+\frametitle{Closed Example $A \imp B$}
+
+\begin{align*}
+[\{ \F(A \diff{\imp} B) \}],\\
+[\{ \T A, \F A \}].
+\end{align*}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Closed Example $A \imp (A \land A)$}
+
+\begin{align*}
+[\{ \F(A \diff{\imp} (A \land A)) \}],\\
+[\{ \T A, \F(A \diff{\land} A)) \}],\\
+[\{ \T A, \F A \}, \{ \T A, \F A \}].
+\end{align*}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Open Example $A \lor \neg A$}
+
+\begin{align*}
+[\{ \F(A \diff{\lor} \neg A) \}],\\
+[\{ \F A, \F(\diff{\neg} A) \}],\\
+[\{ \T A \}].
+\end{align*}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Closed Example $A \imp (A \imp B) \imp B$}
+
+\begin{align*}
+[\{ \F(A \diff{\imp} (A \imp B) \imp B) \}],\\
+[\{ \T A , \F((A \imp B) \diff{\imp} B) \}],\\
+[\{ \T A, \T(A \diff{\imp} B) , \F B \}],\\
+[\{ \T A, \F A, \F B \}, \{ \T A, \T B , \F B \}].
+\end{align*}
+
+\end{frame}
+
 
 \begin{frame}
 \frametitle{Classical vs Intuitionistic Tableau Search}
