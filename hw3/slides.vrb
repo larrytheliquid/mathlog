@@ -1,0 +1,19 @@
+\frametitle{Model Theory for Classical Logic}
+Boolean Algebra $< \mathbb{B} , \false , \true , \&\& , || , ! >$
+
+\begin{block}{Satisfaction}
+\begin{align*}
+\sat{A} &\dfn \eval{A} \equiv \true\\
+\unsat{A} &\dfn \eval{A} \equiv \false
+\end{align*}
+\end{block}
+
+\begin{block}{Evaluation}
+\begin{align*}
+\eval{A \land B} &\dfn \eval{A} ~\&\&~ \eval{B}\\
+\eval{A \lor B} &\dfn \eval{A} ~||~ \eval{B}\\
+\eval{A \imp B} &\dfn ! (\eval{A}) ~||~ \eval{B}\\
+\eval{\neg A} &\dfn ! (\eval{A})
+\end{align*}
+\end{block}
+

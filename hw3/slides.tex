@@ -8,10 +8,22 @@
 \date[Fall 2014]
 {CS 510 - Mathematical Logic and Programming Languages}
 
+\def\true{\textrm{true}}
+\def\false{\textrm{false}}
 \def\imp{\supset}
+\def\dfn{~\Leftrightarrow~}
+\def\arr{\Rightarrow}
 
 \newcommand{\turn}[1]{\Gamma \vdash #1}
 \newcommand{\cturn}[2]{\Gamma , #1 \vdash #2}
+
+\newcommand{\eval}[1]{\sigma \triangleright #1}
+\newcommand{\sat}[1]{\sigma \vDash #1}
+\newcommand{\nsat}[1]{\sigma \nvDash #1}
+\newcommand{\force}[1]{\Gamma \Vdash #1}
+\newcommand{\dforce}[1]{\Delta \Vdash #1}
+\newcommand{\forcep}[1]{\Gamma \Vdash^p #1}
+\newcommand{\nforce}[1]{\Gamma \nVdash #1}
 
 \begin{document}
 
@@ -201,6 +213,54 @@ $$
 $$
 
 \end{frame}
+
+\begin{frame}
+\frametitle{Model Theory for Classical Logic}
+
+{\bf Boolean Algebra} $< \mathbb{B} , \false , \true , \&\& , || , ! >$
+
+Classical truth is a boolean value.
+
+\begin{block}{Satisfaction}
+\begin{align*}
+\sat{A} &\dfn \eval{A} \equiv \true\\
+\nsat{A} &\dfn \eval{A} \equiv \false
+\end{align*}
+\end{block}
+
+\begin{block}{Evaluation}
+\begin{align*}
+\eval{p} &\dfn \sigma ~ p\\
+\eval{A \land B} &\dfn \eval{A} ~\&\&~ \eval{B}\\
+\eval{A \lor B} &\dfn \eval{A} ~||~ \eval{B}\\
+\eval{A \imp B} &\dfn ! (\eval{A}) ~||~ \eval{B}\\
+\eval{\neg A} &\dfn ! (\eval{A})
+\end{align*}
+\end{block}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Model Theory for Intuitionistic Logic}
+
+{\bf Kripke Model} $< \mathbb{C} , \leq , \varnothing , \Vdash >$
+
+Intuitionistic truth is constructive evidence, or a program.
+
+
+\begin{block}{Forcing (intuitionistic satisfaction)}
+\begin{align*}
+\force{p} &\dfn \forcep{p}\\
+\force{A \land B} &\dfn \force{A} \times \force{B}\\
+\force{A \lor B} &\dfn \force{A} ~\uplus~ \force{B}\\
+\force{A \imp B} &\dfn \Gamma \leq \Delta \arr \dforce{A} \arr \dforce{B}\\
+\force{\neg A} &\dfn \Gamma \leq \Delta \arr \dforce{A} \arr \bot\\
+\nforce{A} &\dfn \force{\neg A}
+\end{align*}
+\end{block}
+
+\end{frame}
+
 
 \begin{frame}
 \frametitle{References}
