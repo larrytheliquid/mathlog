@@ -9,12 +9,44 @@
 {CS 510 - Mathematical Logic and Programming Languages}
 
 \def\imp{\supset}
+
 \newcommand{\turn}[1]{\Gamma \vdash #1}
 \newcommand{\cturn}[2]{\Gamma , #1 \vdash #2}
 
 \begin{document}
 
 \frame{\titlepage}
+
+\begin{frame}
+\frametitle{Classical vs Intuitionistic Logic}
+
+%% \begin{columns}[c] % the "c" option specifies center vertical alignment
+%% \column{.35\textwidth}
+%% Contents of the first column
+
+%% \column{.35\textwidth}
+%% Contents split \\ into two lines
+%% \end{columns}
+
+\begin{block}{Classical Logic}
+\begin{itemize}
+\item The {\it meaning} of a proposition is its truth value.
+\item {\bf Satisfaction:} Does evaluating it yield true?
+\item $A \lor \neg A$
+\item $\neg\neg A \Rightarrow A$
+\end{itemize}
+\end{block}
+
+\begin{block}{Intuitionistic Logic}
+\begin{itemize}
+\item The {\it meaning} of a proposition is its constructive content.
+\item {\bf Satisfaction:} Can you write it as a program?
+\item $\neg\neg A \nRightarrow A$
+\end{itemize}
+\end{block}
+
+\end{frame}
+
 
 \begin{frame}
 \frametitle{Proof Theory for Intuitionistic Logic}
