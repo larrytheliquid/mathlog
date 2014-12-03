@@ -18,6 +18,24 @@
 \frame{\titlepage}
 
 \begin{frame}
+\frametitle{Motivation}
+\framesubtitle{Tableau for Classical Logic}
+
+\begin{itemize}
+\item If $\neg A$ is contradictory in all paths, then $A \lor \neg A$
+  lets us conclude $A$ is a {\it tautology}.
+\item For {\it satisfaction}, running tableau on $A$ yield a
+  (classical model) evaluation context $\sigma$.
+\item Tableau seems awfully tied to classical logic, is intuitionistic
+  tableau doomed!?
+\end{itemize}
+
+
+
+\end{frame}
+
+
+\begin{frame}
 \frametitle{Classical vs Intuitionistic Logic}
 
 %% \begin{columns}[c] % the "c" option specifies center vertical alignment
@@ -178,7 +196,7 @@ $$
 \center{...or...}
 
 $$
-\infer{\turn{A \lor \neg\neg A}}
+\infer{\turn{A \lor \neg A}}
 {}
 $$
 
