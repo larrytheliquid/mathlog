@@ -632,6 +632,46 @@ but can still prioritize some and backtrack if they fail.
 \end{frame}
 
 \begin{frame}
+\frametitle{``Open'' Example $\neg A \imp \neg A$}
+
+\begin{columns}[T]
+\begin{column}[T]{4cm}
+\begin{align*}
+[\{ \F(\neg A \diff{\imp} \neg A) \}],\\
+[\{ \T(\diff{\neg} A), \F(\neg A) \}],\\
+[\{ \F A, \F(\diff{\neg} A) \}],\\
+[\{ \T A \}].
+\end{align*}
+\end{column}
+
+\begin{column}[T]{7cm}
+\mycalc
+\end{column}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Closed Example $\neg A \imp \neg A$}
+
+\begin{columns}[T]
+\begin{column}[T]{4cm}
+\begin{align*}
+[\{ \F(\neg A \diff{\imp} \neg A) \}],\\
+[\{ \T(\neg A), \F(\diff{\neg} A) \}],\\
+[\{ \T(\diff{\neg} A), \T A \}],\\
+[\{ \F A, \T A \}].
+\end{align*}
+\end{column}
+
+\begin{column}[T]{7cm}
+\mycalc
+\end{column}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}
 \frametitle{Using Classical vs Intuitionistic Tableau}
 
 \begin{block}{Classical}
