@@ -8,6 +8,9 @@
 \date[Fall 2014]
 {CS 510 - Mathematical Logic and Programming Languages}
 
+\def\|{~|~}
+\def\T{\textrm{T}}
+\def\F{\textrm{F}}
 \def\true{\textrm{true}}
 \def\false{\textrm{false}}
 \def\imp{\supset}
@@ -63,7 +66,8 @@
 \item The {\it meaning} of a proposition is its truth value.
 \item {\bf Satisfaction:} Does evaluating it yield true?
 \item $A \lor \neg A$
-\item $\neg\neg A \Rightarrow A$
+\item $\neg\neg A \imp A$
+\item $A \imp \neg\neg A$
 \end{itemize}
 \end{block}
 
@@ -71,7 +75,7 @@
 \begin{itemize}
 \item The {\it meaning} of a proposition is its constructive content.
 \item {\bf Satisfaction:} Can you write it as a program?
-\item $\neg\neg A \nRightarrow A$
+\item $A \imp \neg\neg A$
 \end{itemize}
 \end{block}
 
@@ -217,7 +221,7 @@ $$
 \begin{frame}
 \frametitle{Model Theory for Classical Logic}
 
-{\bf Boolean Algebra} $< \mathbb{B} , \false , \true , \&\& , || , ! >$
+{\bf Boolean Algebra} $\langle \mathbb{B} , \false , \true , \&\& , || , ! \rangle$
 
 Classical truth is a boolean value.
 
@@ -243,7 +247,7 @@ Classical truth is a boolean value.
 \begin{frame}
 \frametitle{Model Theory for Intuitionistic Logic}
 
-{\bf Kripke Model} $< \mathbb{C} , \leq , \varnothing , \Vdash >$
+{\bf Kripke Model} $\langle \mathbb{C} , \leq , \varnothing , \Vdash \rangle$
 
 Intuitionistic truth is constructive evidence, or a program.
 
@@ -260,6 +264,72 @@ Intuitionistic truth is constructive evidence, or a program.
 \end{block}
 
 \end{frame}
+
+\begin{frame}
+\frametitle{Classical vs Intuitionistic Model Theory}
+
+Many more intuitionistic models than classical models
+because intuitionistic implication and negation allow 
+arbitrary intrinsically distinct functions.
+
+$\Rightarrow$ Much bigger search space for an intuitionistic theorem prover!
+
+\begin{block}{Evaluation}
+\begin{align*}
+\eval{A \imp B} &\dfn ! (\eval{A}) ~||~ \eval{B}\\
+\eval{\neg A} &\dfn ! (\eval{A})
+\end{align*}
+\end{block}
+
+\begin{block}{Forcing}
+\begin{align*}
+\force{A \imp B} &\dfn \Gamma \leq \Delta \arr \dforce{A} \arr \dforce{B}\\
+\force{\neg A} &\dfn \Gamma \leq \Delta \arr \dforce{A} \arr \bot
+\end{align*}
+\end{block}
+
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Intuitionistic Tableau Calculus}
+
+$$
+\infer
+  [\T \land]
+  {S , \T A , \T B}
+{
+  {S , \T(A \land B)}
+}
+\qquad
+\infer
+  [\F \land]
+  {S, \F A \| S, \F B}
+{
+  {S, \F(A \land B)}
+}
+$$
+
+$$
+\infer
+  [\T \lor]
+  {S , \T A \| S , \T B}
+{
+  {S , \T(A \lor B)}
+}
+\qquad
+\infer
+  [\F \lor]
+  {S, \F A , \F B}
+{
+  {S, \F(A \lor B)}
+}
+$$
+
+\end{frame}
+
+
 
 
 \begin{frame}
