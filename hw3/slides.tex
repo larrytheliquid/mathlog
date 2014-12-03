@@ -1,5 +1,6 @@
 \documentclass[mathserif]{beamer}
 \usetheme{Warsaw}
+\usepackage{proof}
 
 \title{Tableau Theorem Prover\\ for Intuitionistic Propositional Logic}
 \author{Larry Diehl}
@@ -7,21 +8,130 @@
 \date[Fall 2014]
 {CS 510 - Mathematical Logic and Programming Languages}
 
+\def\imp{\supset}
+\newcommand{\turn}[1]{\Gamma \vdash #1}
+\newcommand{\cturn}[2]{\Gamma , #1 \vdash #2}
+
 \begin{document}
 
 \frame{\titlepage}
 
 \begin{frame}
-  \frametitle{This is the first slide}
-  %Content goes here
+\frametitle{Proof Theory for Classical Logic}
+
+$$
+\infer
+  [\imp_I]
+  {\turn{A \imp B}}
+{
+  {\cturn{A}{B}}
+}
+\qquad
+\infer
+  [\imp_E]
+  {\turn{B}}
+{
+  {\turn{A \imp B}}
+  &
+  {\turn{A}}
+}
+$$
+
+$$
+\infer
+  [\land_I]
+  {\turn{A \land B}}
+{
+  {\turn{A}}
+  &
+  {\turn{B}}
+}
+\qquad
+\infer
+  [\land_{E_1}]
+  {\turn{A}}
+{
+  {\turn{A \land B}}
+}
+\qquad
+\infer
+  [\land_{E_2}]
+  {\turn{B}}
+{
+  {\turn{A \land B}}
+}
+$$
+
+$$
+\infer
+  [\lor_{I_1}]
+  {\turn{A \lor B}}
+{
+  {\turn{A}}
+}
+\qquad
+\infer
+  [\lor_{I_2}]
+  {\turn{A \lor B}}
+{
+  {\turn{B}}
+}
+\qquad
+\infer
+  [\lor_E]
+  {\turn{C}}
+{
+  {\cturn{A}{C}}
+  &
+  {\cturn{B}{C}}
+}
+$$
+
+$$
+\infer
+  [\neg_I]
+  {\turn{\neg A}}
+{
+  {\cturn{A}{\bot}}
+}
+\qquad
+\infer
+  [\neg_E]
+  {\turn{\bot}}
+{
+  {\turn{A}}
+  &
+  {\turn{\neg A}}
+}
+$$
+
+$$
+\infer
+  [\top_I]
+  {\turn{\top}}
+{
+}
+\qquad
+\infer
+  [\bot_E]
+  {\turn{C}}
+{
+  {\turn{\bot}}
+}
+$$
+
 \end{frame}
 
 \begin{frame}
-  \frametitle{This is the second slide}
-  \framesubtitle{A bit more information about this}
-  %More content goes here
+\frametitle{This is the second slide}
+\framesubtitle{A bit more information about this}
+
 \end{frame}
 
+\begin{frame}
+\frametitle{Reference Smullyan vs Heyting books}
+
+\end{frame}
 
 \end{document}
 
