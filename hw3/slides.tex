@@ -363,7 +363,7 @@ $$
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}[label=calculus]
 \frametitle{Intuitionistic Tableau Calculus}
 
 $$
@@ -437,7 +437,50 @@ $$
 \end{frame}
 
 
+\begin{frame}
+\frametitle{Classical Tableau Interpretation}
 
+Gradually build a model $\sigma$ for $A$ (such that $\sat{A}$),
+until tableau is finished or the model is contradictory.
+
+\begin{block}{Judgments}
+\begin{itemize}
+\item $\T A$ means $A$ is true in the model.
+\item $\F A$ means $A$ is false in the model.
+\end{itemize}
+\end{block}
+
+\begin{block}{Inference Rules}
+If the premise is true, then the conclusion is true.
+\end{block}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Intuitionistic Tableau Interpretation}
+
+Gradually learn what parts of the proposition are known to be provable,
+until tableau is finished or the model is contradictory.
+If there is no contradiction, it is possible to construct a proof
+(an element of $\force{A}$) for the entire proposition.
+
+\begin{block}{Judgments}
+\begin{itemize}
+\item $\T A$ means we have a proof of $A$.
+\item $\F A$ means $A$ we do not (yet) have a proof of $A$.
+\end{itemize}
+\end{block}
+
+\begin{block}{Inference Rules}
+\begin{itemize}
+\item If the premise is true, then the conclusion \diff{may} be true.
+\item The conclusion is logically consistent with the premise.
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+\againframe{calculus}
 
 \begin{frame}
 \frametitle{References}
