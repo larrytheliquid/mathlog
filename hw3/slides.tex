@@ -272,7 +272,7 @@ Many more intuitionistic models than classical models
 because intuitionistic implication and negation allow 
 arbitrary intrinsically distinct functions.
 
-$\Rightarrow$ Much bigger search space for an intuitionistic theorem prover!
+{\it Much bigger search space for an intuitionistic theorem prover!}
 
 \begin{block}{Evaluation}
 \begin{align*}
@@ -294,6 +294,10 @@ $\Rightarrow$ Much bigger search space for an intuitionistic theorem prover!
 
 \begin{frame}
 \frametitle{Intuitionistic Tableau Calculus}
+
+$$
+S_{\T} \dfn \{ \T A \| \T A \in S \}
+$$
 
 $$
 \infer
@@ -327,6 +331,38 @@ $$
 }
 $$
 
+$$
+\infer
+  [\T \! \imp]
+  {S , \F A \| S , \T B}
+{
+  {S , \T(A \imp B)}
+}
+\qquad
+\infer
+  [\F \! \imp]
+  {S_{\T}, \T A , \F B}
+{
+  {S, \F(A \imp B)}
+}
+$$
+
+$$
+\infer
+  [\T \neg]
+  {S , \F A}
+{
+  {S , \T(\neg A)}
+}
+\qquad
+\infer
+  [\F \neg]
+  {S_{\T}, \T A}
+{
+  {S, \F(\neg A)}
+}
+$$
+
 \end{frame}
 
 
@@ -335,6 +371,12 @@ $$
 \begin{frame}
 \frametitle{References}
 \framesubtitle{Classical is to Intuitionistic as Smullyan is to Heyting}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{References}
+\framesubtitle{Optimizations}
 
 \end{frame}
 
