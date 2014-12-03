@@ -17,6 +17,8 @@
 \def\dfn{~\Leftrightarrow~}
 \def\arr{\Rightarrow}
 
+\newcommand{\diff}[1]{{\color{red} #1}}
+
 \newcommand{\turn}[1]{\Gamma \vdash #1}
 \newcommand{\cturn}[2]{\Gamma , #1 \vdash #2}
 
@@ -291,13 +293,8 @@ arbitrary intrinsically distinct functions.
 
 \end{frame}
 
-
 \begin{frame}
-\frametitle{Intuitionistic Tableau Calculus}
-
-$$
-S_{\T} \dfn \{ \T A \| \T A \in S \}
-$$
+\frametitle{Classical Tableau Calculus}
 
 $$
 \infer
@@ -358,6 +355,80 @@ $$
 \infer
   [\F \neg]
   {S_{\T}, \T A}
+{
+  {S, \F(\neg A)}
+}
+$$
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Intuitionistic Tableau Calculus}
+
+$$
+\diff{S_{\T} \dfn \{ \T A \| \T A \in S \}}
+$$
+
+$$
+\infer
+  [\T \land]
+  {S , \T A , \T B}
+{
+  {S , \T(A \land B)}
+}
+\qquad
+\infer
+  [\F \land]
+  {S, \F A \| S, \F B}
+{
+  {S, \F(A \land B)}
+}
+$$
+
+$$
+\infer
+  [\T \lor]
+  {S , \T A \| S , \T B}
+{
+  {S , \T(A \lor B)}
+}
+\qquad
+\infer
+  [\F \lor]
+  {S, \F A , \F B}
+{
+  {S, \F(A \lor B)}
+}
+$$
+
+$$
+\infer
+  [\T \! \imp]
+  {S , \F A \| S , \T B}
+{
+  {S , \T(A \imp B)}
+}
+\qquad
+\infer
+  [\F \! \imp]
+  {\diff{S_{\T}}, \T A , \F B}
+{
+  {S, \F(A \imp B)}
+}
+$$
+
+$$
+\infer
+  [\T \neg]
+  {S , \F A}
+{
+  {S , \T(\neg A)}
+}
+\qquad
+\infer
+  [\F \neg]
+  {\diff{S_{\T}}, \T A}
 {
   {S, \F(\neg A)}
 }
