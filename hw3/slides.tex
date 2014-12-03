@@ -481,6 +481,30 @@ until tableau is finished or the model is contradictory.
 \againframe{calculus}
 
 \begin{frame}
+\frametitle{Classical vs Intuitionistic Tableau}
+
+\begin{block}{Classical}
+To prove that $A$ is true:
+\begin{enumerate}
+\item Assume that $A$ is false.
+\item Build a tableau for $\neg A$.
+\item If some sub-proposition is true and false, $A$ must be true.
+\end{enumerate}
+\end{block}
+
+\begin{block}{Inference Rules}
+To prove that $A$ is forced:
+\begin{enumerate}
+\item Assume that $A$ has not been proven.
+\item Build a tableau for $\neg A$.
+\item If some sub-proposition is provable and not yet proven,
+it must be impossible that $A$ has not been proven.
+\end{enumerate}
+\end{block}
+
+\end{frame}
+
+\begin{frame}
 \frametitle{References}
 \framesubtitle{Classical is to Intuitionistic as Smullyan is to Heyting}
 
