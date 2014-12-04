@@ -107,7 +107,7 @@ $$
 \begin{itemize}
 \item If $\neg A$ is contradictory in all paths, then $A \lor \neg A$
   lets us conclude $A$ is a {\it tautology}.
-\item For {\it satisfaction}, running tableau on $A$ yield a
+\item For {\it satisfiability}, running tableau on $A$ yield a
   (classical model) evaluation context $\sigma$.
 \item Tableau seems awfully tied to classical logic, is intuitionistic
   tableau doomed!?
@@ -124,7 +124,7 @@ $$
 \begin{block}{Classical Logic}
 \begin{itemize}
 \item The {\it meaning} of a proposition is its truth value.
-\item {\bf Satisfaction:} Does evaluating it yield true?
+\item {\bf Satisfiability:} Does evaluating it yield true?
 \item $A \lor \neg A$
 \item $\neg\neg A \imp A$
 \item $A \imp \neg\neg A$
@@ -134,7 +134,7 @@ $$
 \begin{block}{Intuitionistic Logic}
 \begin{itemize}
 \item The {\it meaning} of a proposition is its constructive content.
-\item {\bf Satisfaction:} Can you write it as a program?
+\item {\bf Satisfiability:} Can you write it as a program?
 \item $A \imp \neg\neg A$
 \end{itemize}
 \end{block}
@@ -285,7 +285,7 @@ $$
 
 Classical truth is a boolean value.
 
-\begin{block}{Satisfaction}
+\begin{block}{Satisfiability}
 \begin{align*}
 \sat{A} &\dfn \eval{A} \equiv \true\\
 \nsat{A} &\dfn \eval{A} \equiv \false
@@ -312,7 +312,7 @@ Classical truth is a boolean value.
 Intuitionistic truth is constructive evidence, or a program.
 
 
-\begin{block}{Forcing (intuitionistic satisfaction)}
+\begin{block}{Forcing (intuitionistic satisfiability)}
 \begin{align*}
 \force{p} &\dfn \forcep{p}\\
 \force{A \land B} &\dfn \force{A} \times \force{B}\\
@@ -517,7 +517,7 @@ If the premise is true, then the conclusion is true.
 \begin{frame}
 \frametitle{Intuitionistic Tableau Interpretation}
 
-Gradually build ``a proof'' of $A$ (an element of $\force{A}$),
+Gradually build a ``proof'' of $A$ (an ``element'' of $\force{A}$),
 until tableau is finished or the model is contradictory.
 
 \begin{block}{Judgments}
@@ -539,12 +539,12 @@ until tableau is finished or the model is contradictory.
 \againframe{calculus}
 
 \begin{frame}
-\frametitle{Closed Example $A \imp B$}
+\frametitle{Closed Example $A \imp A$}
 
 \begin{columns}[T]
 \begin{column}[T]{4cm}
 \begin{align*}
-[\{ \F(A \diff{\imp} B) \}],\\
+[\{ \F(A \diff{\imp} A) \}],\\
 [\{ \T A, \F A \}].
 \end{align*}
 \end{column}
