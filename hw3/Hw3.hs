@@ -4,29 +4,37 @@ import SimpleProp
 
 ----------------------------------------------------------------------
 
-type SProp a = (Bool, Prop a)
+data SProp a = T (Prop a) | F (Prop a)
+
+data Discrim a = All (Discrim' a) | Ts (Discrim' a)
+
+data Discrim' a = Alpha a a | Beta a a | Lit a
 
 ----------------------------------------------------------------------
 
-data Discrim a = Alpha a a | Beta a a | Lit a
+restrict :: Discrim a -> Discrim a
+restrict (All x) = Ts x
+restrict x = x
 
-discrim :: SProp a -> Discrim (Prop a)
+----------------------------------------------------------------------
 
-discrim (True , TruthP) = Lit TruthP
-discrim (True , AbsurdP) = Lit AbsurdP
-discrim (True , LetterP s) = Lit (LetterP s)
-discrim (True , AndP x y) = Alpha x y
-discrim (True , OrP x y) = Beta x y
-discrim (True , ImpliesP x y) = Beta (NotP x) y
-discrim (True , NotP x) = undefined
+discrim :: SProp a -> Discrim (SProp a)
+discrim x = case x of
+  T TruthP         -> All $ Lit (T TruthP) -- TODO
+  T AbsurdP        -> All $ Lit (T AbsurdP) -- TODO
+  T (LetterP s)    -> All $ Lit (T (LetterP s))
+  T (AndP x y)     -> All $ Alpha (T x) (T y)
+  T (OrP x y)      -> All $ Beta (T x) (T y)
+  T (ImpliesP x y) -> All $ Beta (F x) (T y)
+  T (NotP x)       -> discrim (F x)
 
-discrim (False , OrP x y) = Alpha (NotP x)  (NotP y)
-discrim (False , ImpliesP x y) = Alpha x (NotP y)
-discrim (False , AndP x y) = Beta (NotP x) (NotP y)
-discrim (False , NotP x) = undefined -- discrim x
-discrim (False , TruthP) = Lit AbsurdP
-discrim (False , AbsurdP) = Lit TruthP
-discrim (False , LetterP s) = Lit (NotP (LetterP s))
+  F TruthP         -> All $ Lit (F TruthP) -- TODO
+  F AbsurdP        -> All $ Lit (F AbsurdP) -- TODO
+  F (LetterP s)    -> All $ Lit (F (LetterP s))
+  F (AndP x y)     -> All $ Beta (F x) (F y)
+  F (OrP x y)      -> All $ Alpha (F x) (F y)
+  F (ImpliesP x y) -> Ts  $ Alpha (T x) (F y)
+  F (NotP x)       -> restrict $ discrim (T x)
 
 ----------------------------------------------------------------------
 
@@ -45,8 +53,8 @@ discrim (False , LetterP s) = Lit (NotP (LetterP s))
 
 toEither :: [SProp a] -> [Either a a]
 toEither [] = []
-toEither ((True , LetterP a) : ps) = Left a : toEither ps
-toEither ((False , LetterP a) : ps) = Right a : toEither ps
+toEither (T (LetterP a) : ps) = Left a : toEither ps
+toEither (F (LetterP a) : ps) = Right a : toEither ps
 toEither (_ : ps) = toEither ps
 
 both :: Eq a => [Either a a] -> Maybe [Either a a]
