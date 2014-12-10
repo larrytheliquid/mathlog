@@ -20,16 +20,16 @@ restrictD x = x
 
 discrim :: SProp a -> Discrim (SProp a)
 discrim x = case x of
-  T TruthP         -> All $ Lit (T TruthP) -- TODO
-  T AbsurdP        -> All $ Lit (T AbsurdP) -- TODO
+  T TruthP         -> All $ Lit (T TruthP)
+  T AbsurdP        -> All $ Lit (T AbsurdP)
   T (LetterP s)    -> All $ Lit (T (LetterP s))
   T (AndP x y)     -> All $ Alpha (T x) (T y)
   T (OrP x y)      -> All $ Beta (T x) (T y)
   T (ImpliesP x y) -> All $ Beta (F x) (T y)
   T (NotP x)       -> discrim (F x)
 
-  F TruthP         -> All $ Lit (F TruthP) -- TODO
-  F AbsurdP        -> All $ Lit (F AbsurdP) -- TODO
+  F TruthP         -> All $ Lit (T AbsurdP)
+  F AbsurdP        -> All $ Lit (T TruthP)
   F (LetterP s)    -> All $ Lit (F (LetterP s))
   F (AndP x y)     -> All $ Beta (F x) (F y)
   F (OrP x y)      -> All $ Alpha (F x) (F y)
