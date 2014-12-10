@@ -4,7 +4,7 @@ import SimpleProp
 
 ----------------------------------------------------------------------
 
-data SProp a = T (Prop a) | F (Prop a)
+data SProp a = T (Prop a) | F (Prop a) deriving Show
 
 data Discrim a = All (Discrim' a) | Ts (Discrim' a)
 
@@ -12,9 +12,9 @@ data Discrim' a = Alpha a a | Beta a a | Lit a
 
 ----------------------------------------------------------------------
 
-restrict :: Discrim a -> Discrim a
-restrict (All x) = Ts x
-restrict x = x
+restrictD :: Discrim a -> Discrim a
+restrictD (All x) = Ts x
+restrictD x = x
 
 ----------------------------------------------------------------------
 
@@ -34,20 +34,30 @@ discrim x = case x of
   F (AndP x y)     -> All $ Beta (F x) (F y)
   F (OrP x y)      -> All $ Alpha (F x) (F y)
   F (ImpliesP x y) -> Ts  $ Alpha (T x) (F y)
-  F (NotP x)       -> restrict $ discrim (T x)
+  F (NotP x)       -> restrictD $ discrim (T x)
 
 ----------------------------------------------------------------------
 
--- process :: [Prop a] -> [[Prop a]]
--- process [] = [[]]
--- process (p : ps) =
---   case (discrim p) of
---     Lit x -> map (x:) (process ps)
---     Alpha x y -> process (x : y : ps)
---     Beta x y -> process (x : ps) ++ process (y : ps)
+restrict :: [SProp a] -> [SProp a]
+restrict [] = []
+restrict (T p : ps) = T p : restrict ps
+restrict (F _ : ps) = restrict ps
 
--- tabulate :: Prop a -> [[Prop a]]
--- tabulate p = process [NotP p]
+----------------------------------------------------------------------
+
+process :: [SProp a] -> [[SProp a]]
+process [] = [[]]
+process (p : ps) =
+  case discrim p of
+    All x -> f x ps
+    Ts x  -> f x (restrict ps)
+  where
+  f (Lit x) qs = map (x:) (process qs)
+  f (Alpha x y) qs = process (x : y : qs)
+  f (Beta x y) qs = process (x : qs) ++ process (y : qs)
+
+tabulate :: Prop a -> [[SProp a]]
+tabulate p = process [F p]
 
 ----------------------------------------------------------------------
 
@@ -73,20 +83,19 @@ contras = all contra
 
 ----------------------------------------------------------------------
 
--- tableau :: Eq a => Prop a -> Bool
--- tableau = contras . tabulate
+tableau :: Eq a => Prop a -> Bool
+tableau = contras . tabulate
 
--- tableau2 :: Eq a => Prop a -> Bool
--- tableau2 = contras . tabulate2
+----------------------------------------------------------------------
 
--- ----------------------------------------------------------------------
+eg1 = 0 ~> 0
 
--- eg0 =  0 /\ 1
+eg2 = 0 ~> (0 /\ 0)
 
--- eg1 =  0 \/ (1 /\ 2)
+eg3 = 0 \/ (NotP 0)
 
--- eg2 = 0 \/ (1 /\ 2) ~> ((0 \/ 1) /\ (0 \/ 2))
+eg4 = 0 ~> ((0 ~> 1) ~> 1)
 
--- eg3 = (0 ~> (1 ~> 2)) ~> ((0 ~> 1) ~> (0 ~> 2))
+eg5 = NotP 0 ~> NotP 0
 
--- ----------------------------------------------------------------------
+----------------------------------------------------------------------
