@@ -17,23 +17,27 @@ restrict ((F , _) : ps) = restrict ps
 
 ----------------------------------------------------------------------
 
+conj :: [[a]] -> [[a]] -> [[a]]
+conj xss yss = xss ++ yss
+-- map (uncurry (++)) (zip xss yss)
+-- [[2,4],[6,8]] `conj` [[1,3],[5,7]]
+
+----------------------------------------------------------------------
+
 process :: Eq a => [SProp a] -> [SVar a] -> [[[SVar a]]]
 process [] as = [[as]]
-process xs as = [ process1 x (delete x xs) as | x <- xs ]
+process xs as = map nub $ nub . concat $ [ process1 x (delete x xs) as | x <- xs ]
 
-processN :: Eq a => [SProp a] -> [SVar a] -> [[SVar a]]
-processN ps as = nub . concat $ process ps as
-
-process1 :: Eq a => SProp a -> [SProp a] -> [SVar a] -> [[SVar a]]
-process1 (s , LetterP a)     ps as = processN ps ((s , a):as)
-process1 (T , AndP x y)      ps as = processN ((T , x):(T , y):ps) as
-process1 (F , AndP x y)      ps as = processN ((F , x):ps) as ++ processN ((F , y):ps) as
-process1 (T , OrP x y)       ps as = processN ((T , x):ps) as ++ processN ((T , y):ps) as
-process1 (F , OrP x y)       ps as = processN ((F , x):(F , y):ps) as
-process1 (T , ImpliesP x y)  ps as = processN ((F , x):ps) as ++ processN ((T , y):ps) as
-process1 (F , ImpliesP x y)  ps as = processN ((T , x):(F , y):restrict ps) (restrict as)
-process1 (T , NotP x)        ps as = processN ((F , x):ps) as
-process1 (F , NotP x)        ps as = processN ((T , x):restrict ps) (restrict as)
+process1 :: Eq a => SProp a -> [SProp a] -> [SVar a] -> [[[SVar a]]]
+process1 (s , LetterP a)     ps as = process ps ((s , a):as)
+process1 (T , AndP x y)      ps as = process ((T , x):(T , y):ps) as
+process1 (F , AndP x y)      ps as = process ((F , x):ps) as `conj` process ((F , y):ps) as
+process1 (T , OrP x y)       ps as = process ((T , x):ps) as `conj` process ((T , y):ps) as
+process1 (F , OrP x y)       ps as = process ((F , x):(F , y):ps) as
+process1 (T , ImpliesP x y)  ps as = process ((F , x):ps) as `conj` process ((T , y):ps) as
+process1 (F , ImpliesP x y)  ps as = process ((T , x):(F , y):restrict ps) (restrict as)
+process1 (T , NotP x)        ps as = process ((F , x):ps) as
+process1 (F , NotP x)        ps as = process ((T , x):restrict ps) (restrict as)
 
 ----------------------------------------------------------------------
 
