@@ -5,7 +5,7 @@ import Data.List
 
 ----------------------------------------------------------------------
 
-data Sign = T | F deriving (Eq, Show)
+data Sign = T | F deriving (Eq, Ord, Show)
 
 type SProp a = (Sign , Prop a)
 type SVar a = (Sign , a)
@@ -15,31 +15,29 @@ restrict [] = []
 restrict ((T , p) : ps) = (T , p) : restrict ps
 restrict ((F , _) : ps) = restrict ps
 
-hmz :: Eq a => [a] -> [[a]]
--- hmz xs = flip map xs $ \x -> x : delete x xs
-hmz xs = [ x : delete x xs | x <- xs ]
-
 ----------------------------------------------------------------------
 
-process :: Eq a => [SProp a] -> [SVar a] -> [[SVar a]]
-process [] as = [as]
-process xs as = nub $ concat [ process1 x (delete x xs) as | x <- xs ]
--- process (p : ps) as = process1 p ps as
+process :: Eq a => [SProp a] -> [SVar a] -> [[[SVar a]]]
+process [] as = [[as]]
+process xs as = [ process1 x (delete x xs) as | x <- xs ]
+
+processN :: Eq a => [SProp a] -> [SVar a] -> [[SVar a]]
+processN ps as = nub . concat $ process ps as
 
 process1 :: Eq a => SProp a -> [SProp a] -> [SVar a] -> [[SVar a]]
-process1 (s , LetterP a)     ps as = process ps ((s , a):as)
-process1 (T , AndP x y)      ps as = process ((T , x):(T , y):ps) as
-process1 (F , AndP x y)      ps as = process ((F , x):ps) as ++ process ((F , y):ps) as
-process1 (T , OrP x y)       ps as = process ((T , x):ps) as ++ process ((T , y):ps) as
-process1 (F , OrP x y)       ps as = process ((F , x):(F , y):ps) as
-process1 (T , ImpliesP x y)  ps as = process ((F , x):ps) as ++ process ((T , y):ps) as
-process1 (F , ImpliesP x y)  ps as = process ((T , x):(F , y):restrict ps) (restrict as)
-process1 (T , NotP x)        ps as = process ((F , x):ps) as
-process1 (F , NotP x)        ps as = process ((T , x):restrict ps) (restrict as)
+process1 (s , LetterP a)     ps as = processN ps ((s , a):as)
+process1 (T , AndP x y)      ps as = processN ((T , x):(T , y):ps) as
+process1 (F , AndP x y)      ps as = processN ((F , x):ps) as ++ processN ((F , y):ps) as
+process1 (T , OrP x y)       ps as = processN ((T , x):ps) as ++ processN ((T , y):ps) as
+process1 (F , OrP x y)       ps as = processN ((F , x):(F , y):ps) as
+process1 (T , ImpliesP x y)  ps as = processN ((F , x):ps) as ++ processN ((T , y):ps) as
+process1 (F , ImpliesP x y)  ps as = processN ((T , x):(F , y):restrict ps) (restrict as)
+process1 (T , NotP x)        ps as = processN ((F , x):ps) as
+process1 (F , NotP x)        ps as = processN ((T , x):restrict ps) (restrict as)
 
 ----------------------------------------------------------------------
 
-tabulate :: Eq a => Prop a -> [[SVar a]]
+tabulate :: Eq a => Prop a -> [[[SVar a]]]
 tabulate p = process [(F , p)] []
 
 ----------------------------------------------------------------------
@@ -55,13 +53,13 @@ both = flip foldl (Just []) $
 contra :: Eq a => [SVar a] -> Bool
 contra = maybe True (const False) . both
 
-contras :: Eq a => [[SVar a]] -> Bool
-contras = all contra
+closed :: Eq a => [[[SVar a]]] -> Bool
+closed = any (all contra)
 
 ----------------------------------------------------------------------
 
 tableau :: Eq a => Prop a -> Bool
-tableau = contras . tabulate
+tableau = closed . tabulate
 
 ----------------------------------------------------------------------
 
