@@ -1,84 +1,54 @@
 module Main  where
 
 import SimpleProp
+import Data.List
 
 ----------------------------------------------------------------------
 
-data SProp a = T (Prop a) | F (Prop a) deriving Show
+data Sign = T | F deriving (Eq, Show)
 
-data Discrim a = All (Discrim' a) | Ts (Discrim' a)
+type SProp a = (Sign , Prop a)
+type SVar a = (Sign , a)
 
-data Discrim' a = Alpha a a | Beta a a | Lit a
-
-----------------------------------------------------------------------
-
-restrictD :: Discrim a -> Discrim a
-restrictD (All x) = Ts x
-restrictD x = x
-
-----------------------------------------------------------------------
-
-discrim :: SProp a -> Discrim (SProp a)
-discrim x = case x of
-  T TruthP         -> All $ Lit (T TruthP)
-  T AbsurdP        -> All $ Lit (T AbsurdP)
-  T (LetterP s)    -> All $ Lit (T (LetterP s))
-  T (AndP x y)     -> All $ Alpha (T x) (T y)
-  T (OrP x y)      -> All $ Beta (T x) (T y)
-  T (ImpliesP x y) -> All $ Beta (F x) (T y)
-  T (NotP x)       -> discrim (F x)
-
-  F TruthP         -> All $ Lit (T AbsurdP)
-  F AbsurdP        -> All $ Lit (T TruthP)
-  F (LetterP s)    -> All $ Lit (F (LetterP s))
-  F (AndP x y)     -> All $ Beta (F x) (F y)
-  F (OrP x y)      -> All $ Alpha (F x) (F y)
-  F (ImpliesP x y) -> Ts  $ Alpha (T x) (F y)
-  F (NotP x)       -> restrictD $ discrim (T x)
-
-----------------------------------------------------------------------
-
-restrict :: [SProp a] -> [SProp a]
+restrict :: [(Sign , a)] -> [(Sign , a)]
 restrict [] = []
-restrict (T p : ps) = T p : restrict ps
-restrict (F _ : ps) = restrict ps
+restrict ((T , p) : ps) = (T , p) : restrict ps
+restrict ((F , _) : ps) = restrict ps
 
 ----------------------------------------------------------------------
 
-process :: [SProp a] -> [[SProp a]]
-process [] = [[]]
-process (p : ps) =
-  case discrim p of
-    All x -> f x ps
-    Ts x  -> f x (restrict ps)
-  where
-  f (Lit x) qs = map (x:) (process qs)
-  f (Alpha x y) qs = process (x : y : qs)
-  f (Beta x y) qs = process (x : qs) ++ process (y : qs)
-
-tabulate :: Prop a -> [[SProp a]]
-tabulate p = process [F p]
+process :: [SProp a] -> [SVar a] -> [[SVar a]]
+process [] as = [as]
+process (p : ps) as = case p of
+  (s , LetterP a)     -> process ps ((s , a):as)
+  (T , AndP x y)      -> process ((T , x):(T , y):ps) as
+  (F , AndP x y)      -> process ((F , x):ps) as ++ process ((F , y):ps) as
+  (T , OrP x y)       -> process ((T , x):ps) as ++ process ((T , y):ps) as
+  (F , OrP x y)       -> process ((F , x):(F , y):ps) as
+  (T , ImpliesP x y)  -> process ((F , x):ps) as ++ process ((T , y):ps) as
+  (F , ImpliesP x y)  -> process ((T , x):(F , y):restrict ps) (restrict as)
+  (T , NotP x)        -> process ((F , x):ps) as
+  (F , NotP x)        -> process ((T , x):restrict ps) (restrict as)
 
 ----------------------------------------------------------------------
 
-toEither :: [SProp a] -> [Either a a]
-toEither [] = []
-toEither (T (LetterP a) : ps) = Left a : toEither ps
-toEither (F (LetterP a) : ps) = Right a : toEither ps
-toEither (_ : ps) = toEither ps
+tabulate :: Prop a -> [[SVar a]]
+tabulate p = process [(F , p)] []
 
-both :: Eq a => [Either a a] -> Maybe [Either a a]
+----------------------------------------------------------------------
+
+both :: Eq a => [SVar a] -> Maybe [SVar a]
 both = flip foldl (Just []) $
   \ m x -> case m of
     Nothing -> Nothing
     Just ps -> case x of
-      Left p -> if any (== Right p) ps then Nothing else Just (Left p:ps)
-      Right p -> if any (== Left p) ps then Nothing else Just (Right p:ps)
+      (T , p) -> if any (== (F , p)) ps then Nothing else Just ((T , p):ps)
+      (F , p) -> if any (== (T , p)) ps then Nothing else Just ((F , p):ps)
 
-contra :: Eq a => [SProp a] -> Bool
-contra = maybe True (const False) . both . toEither
+contra :: Eq a => [SVar a] -> Bool
+contra = maybe True (const False) . both
 
-contras :: Eq a => [[SProp a]] -> Bool
+contras :: Eq a => [[SVar a]] -> Bool
 contras = all contra
 
 ----------------------------------------------------------------------

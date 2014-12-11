@@ -9,8 +9,6 @@ data Prop a =
    | OrP (Prop a) (Prop a)
    | ImpliesP (Prop a) (Prop a)
    | NotP (Prop a)
-   | AbsurdP
-   | TruthP
  deriving Eq
 
 --- Some syntactic sugar.
@@ -26,8 +24,6 @@ p ~> q = ImpliesP p q
 -- A valuation function
 
 value :: (t -> Bool) -> Prop t -> Bool
-value vf TruthP = True
-value vf AbsurdP = False
 value vf (NotP x) = not (value vf x)
 value vf (AndP x y) = (value vf x) && (value vf y)
 value vf (OrP x y) = (value vf x) || (value vf y)
@@ -73,8 +69,6 @@ precedence (ImpliesP _ _) = 2
 precedence _ = 1
 
 parens n (term@(LetterP _)) = pp term
-parens n (term@AbsurdP) = pp term
-parens n (term@TruthP) = pp term
 parens n (term@(NotP _)) = pp term
 parens n term | n /= precedence term = PP.parens (pp term)
               | otherwise = pp term
@@ -93,8 +87,6 @@ instance PPLetter a => PP(Prop a) where
   pp (p@(OrP x y)) = PP.sep [ parens 3 x, text "\\/", parens 3 y]
     -- PP.fsep (PP.punctuate (text " \\/") (map (parens 3) (ors p)))
   pp (ImpliesP x y) = PP.sep [ parens 3 x, text "=>", parens 2 y]
-  pp AbsurdP = text "F"
-  pp TruthP = text "T"
 
 instance PPLetter a => Show (Prop a) where
   show x = render (pp x)
