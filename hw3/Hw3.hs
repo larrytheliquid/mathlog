@@ -15,13 +15,18 @@ restrict [] = []
 restrict ((T , p) : ps) = (T , p) : restrict ps
 restrict ((F , _) : ps) = restrict ps
 
+hmz :: Eq a => [a] -> [[a]]
+-- hmz xs = flip map xs $ \x -> x : delete x xs
+hmz xs = [ x : delete x xs | x <- xs ]
+
 ----------------------------------------------------------------------
 
-process :: [SProp a] -> [SVar a] -> [[SVar a]]
+process :: Eq a => [SProp a] -> [SVar a] -> [[SVar a]]
 process [] as = [as]
-process (p : ps) as = process1 p ps as
+process xs as = nub $ concat [ process1 x (delete x xs) as | x <- xs ]
+-- process (p : ps) as = process1 p ps as
 
-process1 :: SProp a -> [SProp a] -> [SVar a] -> [[SVar a]]
+process1 :: Eq a => SProp a -> [SProp a] -> [SVar a] -> [[SVar a]]
 process1 (s , LetterP a)     ps as = process ps ((s , a):as)
 process1 (T , AndP x y)      ps as = process ((T , x):(T , y):ps) as
 process1 (F , AndP x y)      ps as = process ((F , x):ps) as ++ process ((F , y):ps) as
@@ -34,7 +39,7 @@ process1 (F , NotP x)        ps as = process ((T , x):restrict ps) (restrict as)
 
 ----------------------------------------------------------------------
 
-tabulate :: Prop a -> [[SVar a]]
+tabulate :: Eq a => Prop a -> [[SVar a]]
 tabulate p = process [(F , p)] []
 
 ----------------------------------------------------------------------
