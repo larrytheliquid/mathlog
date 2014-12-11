@@ -19,16 +19,18 @@ restrict ((F , _) : ps) = restrict ps
 
 process :: [SProp a] -> [SVar a] -> [[SVar a]]
 process [] as = [as]
-process (p : ps) as = case p of
-  (s , LetterP a)     -> process ps ((s , a):as)
-  (T , AndP x y)      -> process ((T , x):(T , y):ps) as
-  (F , AndP x y)      -> process ((F , x):ps) as ++ process ((F , y):ps) as
-  (T , OrP x y)       -> process ((T , x):ps) as ++ process ((T , y):ps) as
-  (F , OrP x y)       -> process ((F , x):(F , y):ps) as
-  (T , ImpliesP x y)  -> process ((F , x):ps) as ++ process ((T , y):ps) as
-  (F , ImpliesP x y)  -> process ((T , x):(F , y):restrict ps) (restrict as)
-  (T , NotP x)        -> process ((F , x):ps) as
-  (F , NotP x)        -> process ((T , x):restrict ps) (restrict as)
+process (p : ps) as = process1 p ps as
+
+process1 :: SProp a -> [SProp a] -> [SVar a] -> [[SVar a]]
+process1 (s , LetterP a)     ps as = process ps ((s , a):as)
+process1 (T , AndP x y)      ps as = process ((T , x):(T , y):ps) as
+process1 (F , AndP x y)      ps as = process ((F , x):ps) as ++ process ((F , y):ps) as
+process1 (T , OrP x y)       ps as = process ((T , x):ps) as ++ process ((T , y):ps) as
+process1 (F , OrP x y)       ps as = process ((F , x):(F , y):ps) as
+process1 (T , ImpliesP x y)  ps as = process ((F , x):ps) as ++ process ((T , y):ps) as
+process1 (F , ImpliesP x y)  ps as = process ((T , x):(F , y):restrict ps) (restrict as)
+process1 (T , NotP x)        ps as = process ((F , x):ps) as
+process1 (F , NotP x)        ps as = process ((T , x):restrict ps) (restrict as)
 
 ----------------------------------------------------------------------
 
